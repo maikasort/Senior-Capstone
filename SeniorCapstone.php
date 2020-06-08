@@ -178,11 +178,11 @@
             fclose($fp);
             if($run == $Output){
             $comment = "Use of Illegal Constraint -Points were Deducted";
-            $grade = $grade + 0;
+            $grade = $grade - 1;
             }
             else{
             $comment = "Use of Accepted Key Word For The Following: ($key)";
-            $grade = $grade - 1;
+            $grade = $grade + 0;
            }
           }
         $testcases[] = $comment;
