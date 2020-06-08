@@ -49,7 +49,7 @@
            $correct[] = $comment;
         }
         else{
-            $comment = "Missing Semi Colon";
+            $comment = "Missing Colon";
             $addIn = ":";
             $strpos1 = strpos($answer, ")");
             $answer = substr_replace($answer, $addIn, $strpos1 + 1, 0);
