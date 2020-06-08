@@ -75,17 +75,25 @@
         $correct[] = $comment;  
        }
        
-        if($constraint_found == 1){
-           if(strstr($answer, "print") || strstr($answer, "for")){
-              $comment = "constraint was found";
-              $correct[] = $comment;
-           }
-           else{
-              $comment = "constraint was not found";
-              $grade = $grade - 3;
-              $correct[] = $comment;
-             }
-         }
+     if($constraint_found == 1){
+        if(strstr($answer, "print")){
+          $comment = "constraint 'print' was found";
+          $correct[] = $comment;
+        }
+        elseif(strstr($answer, "for")){
+          $comment = "constraint 'for' was found";
+          $correct[] = $comment;
+        }
+        elseif(strstr($answer, "print") || strstr($answer, "for")){
+          $comment = "constraints were found";
+          $correct[] = $comment;
+        }
+        else{
+          $comment = "constraint was not found";
+          $grade = $grade - 3;
+          $correct[] = $comment;
+          }
+        }
          
   if($constraint_found == 1){        
         $iterator = new MultipleIterator;
@@ -98,26 +106,38 @@
             $value = $values[1];
         if($findprint == false){
             $code = $answer."\nprint(". $func_name."(".$key."))"."\n";
+            
+            $Output = $value;
+            $runFile = "runFile.py";
+            $fp = fopen("$runFile", "a") or die ("Unable to open file");
+            fwrite($fp, $code);
+            $run = exec("python $runFile 2>&1");
+            fclose($fp);
+            if($run == $Output){
+            $comment = "Expected output matched test case: ($key)";
+            $grade = $grade + 0;
+            }
+            else{
+            $comment = "Expected output did not match test case: ($key)";
+            $grade = $grade - 1;
+           }
         }
         else{
             $code = $answer."\n". $func_name."(".$key.")"."\n";
-        }
-
-        $Output = $value;
-        $runFile = "runFile.py";
-        $fp = fopen("$runFile", "a") or die ("Unable to open file");
-        fwrite($fp, $code);
-        $run = exec("python $runFile 2>&1");
-        fclose($fp);
-        if($run == $Output){
-        $comment = "Expected output matched test case: ($key) = $Output ";
-        $grade = $grade + 0;
-        echo $comment;
-        }
-        else{
-        $comment = "Expected output did not match test case: ($key) = $Output";
-        $grade = $grade - 1;
-        echo $comment;
+            $Output = $value;
+            $runFile = "runFile.py";
+            $fp = fopen("$runFile", "a") or die ("Unable to open file");
+            fwrite($fp, $code);
+            $run = exec("python $runFile 2>&1");
+            fclose($fp);
+            if($run == $Output){
+            $comment = "Expected output matched test case: ($key)";
+            $grade = $grade + 0;
+          }
+            else{
+            $comment = "Expected output did not match test case: ($key)";
+            $grade = $grade - 1;
+          }
         }
         $testcases[] = $comment;
       }
@@ -133,27 +153,38 @@
             $value = $values[1];
         if($findprint == false){
             $code = $answer."\nprint(". $func_name."(".$key."))"."\n";
+            $Output = $value;
+            $runFile = "runFile.py";
+            $fp = fopen("$runFile", "a") or die ("Unable to open file");
+            fwrite($fp, $code);
+            $run = exec("python $runFile 2>&1");
+            fclose($fp);
+            if($run == $Output){
+            $comment = "Expected output matched test case: ($key)";
+            $grade = $grade + 0;
+           }
+            else{
+            $comment = "Expected output did not match test case: ($key)";
+            $grade = $grade - 1;
+          }
         }
         else{
             $code = $answer."\n". $func_name."(".$key.")"."\n";
-        }
-
-        $Output = $value;
-        $runFile = "runFile.py";
-        $fp = fopen("$runFile", "a") or die ("Unable to open file");
-        fwrite($fp, $code);
-        $run = exec("python $runFile 2>&1");
-        fclose($fp);
-        if($run == $Output){
-        $comment = "Student Attempted to Cheat Using Illegal Constraint -Points Deducted ";
-        $grade = $grade - 1;
-        echo $comment;
-        }
-        else{
-        $comment = "Usage of Correct Keyword";
-        $grade = $grade + 0;
-        echo $comment;
-        }
+            $Output = $value;
+            $runFile = "runFile.py";
+            $fp = fopen("$runFile", "a") or die ("Unable to open file");
+            fwrite($fp, $code);
+            $run = exec("python $runFile 2>&1");
+            fclose($fp);
+            if($run == $Output){
+            $comment = "Use of Illegal Constraint -Points were Deducted";
+            $grade = $grade + 0;
+            }
+            else{
+            $comment = "Use of Accepted Key Word For The Following: ($key)";
+            $grade = $grade - 1;
+           }
+          }
         $testcases[] = $comment;
       }
      }
@@ -193,3 +224,4 @@ echo $results;
 curl_close($curl);
 
 ?>
+
