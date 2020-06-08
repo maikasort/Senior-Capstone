@@ -1,5 +1,5 @@
 <?php
-   //Sonfo-Maika Diomande
+   /*All Material © Sonfo-Maika Diomande | New Jersey Institute of Technology June 2020 */
 
     $var = file_get_contents('php://input', true);
     $info = json_decode($var, true);
