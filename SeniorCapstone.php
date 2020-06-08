@@ -44,7 +44,7 @@
     
     $findColon = preg_match('/(def)\s\w+(\'?|\"?\w?|\W?\'?|\"?,?\w+)*\):/', $answer);
          if($findColon == 1){
-           $comment = "Semi Colon Was Found";
+           $comment = "Colon Was Found";
            $grade = $grade + 0;
            $correct[] = $comment;
         }
