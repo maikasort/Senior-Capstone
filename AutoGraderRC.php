@@ -8,7 +8,7 @@
     $QIDs = $info['QIDs'];
     $constraints = $info['Constraint'];
     $score = $info['Qpoints'];
-    $constraint_found = strcmp($constraints, "Default") != 0;
+    $constraint_found = strcmp($constraints, "none") != 0;
     
     //$grade = 60;//dummy data to see
     
