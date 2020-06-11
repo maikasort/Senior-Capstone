@@ -44,6 +44,15 @@
     $eachdeduction = 0.25 * $score;
     $casespointsoff = (0.25/count($cinput))*$score;
     $totalpoints = $score;
+    
+    if($constraint_found == 0){
+        $eachdeduction = round(0.333333 * $score);
+        $casespointsoff = round((0.333333/count($cinput))*$score);
+    }
+    else{
+        $eachdeduction = 0.25 * $score;
+        $casespointsoff = (0.25/count($cinput))*$score;
+    }
    
     //checking for colon here using Regex
     $findColon = preg_match('/(def)\s\w+(\'?|\"?\w?|\W?\'?|\"?,?\w+)*\):/', $answer);
