@@ -62,6 +62,10 @@ case "SendAnswer":
 	$url = 'https://web.njit.edu/~mm693/test2.php';
 break;
 
+case "UpdateT":
+    $url = 'https://web.njit.edu/~mm693/test2.php';
+break;
+
 default:
 
 echo("Some Error");
