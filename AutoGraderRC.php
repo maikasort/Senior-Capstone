@@ -105,13 +105,6 @@
           $checkarr[] = $check; 
           $deduct[] = $eachdeduction; 
         }
-        elseif(strstr($answer, "print") || strstr($answer, "for")){
-          $comment = "constraints were found";
-          $correct[] = $comment;
-          $check = "true";
-          $checkarr[] = $check; 
-          $deduct[] = $eachdeduction; 
-        }
         else{
           $comment = "constraint was not found";
           $totalpoints -= $eachdeduction;
