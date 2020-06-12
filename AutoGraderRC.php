@@ -1,6 +1,5 @@
 <?php
  /* All Material © Sonfo-Maika Diomande | New Jersey Institute of Technology June 2020 */
-
     $var = file_get_contents('php://input', true);
     $info = json_decode($var, true);
     
@@ -68,7 +67,7 @@
             $addIn = ":";
             $strpos1 = strpos($answer, ")");
             $answer = substr_replace($answer, $addIn, $strpos1 + 1, 0);
-            $totalpoints -= $eachdeduction;
+            $totalpoints = floor($totalpoints - $eachdeduction);
             $correct[] = $comment;
             $check = "false";
             $checkarr[] = $check;
@@ -79,20 +78,20 @@
         $secondSet = substr($firstSet, 4);
     
        if(strcmp($secondSet, $func_name)== 0){
-            $comment = "The Function Name was correct ";
+            $comment = "The Function Name: $func_name was correct ";
             $correct[] = $comment;
             $check = "true";
             $checkarr[] = $check; 
             $deduct[] = $eachdeduction;  
         }
        else{
-        $comment = "The Function Name \"$secondSet\" was incorrect"; 
+        $comment = "The Function Name: $secondSet was incorrect"; 
         $front_pos = strpos($answer, $secondSet);
         $back_pos = strpos($answer, '(');
         $some_calc = $back_pos - $front_pos;
         $answer = substr_replace($answer, $func_name, $front_pos, $some_calc);
         //the corrected function name
-        $totalpoints -= $eachdeduction;
+        $totalpoints = floor($totalpoints - $eachdeduction);
         $correct[] = $comment;  
         $check = "false";
         $checkarr[] = $check;  
@@ -115,8 +114,14 @@
           $deduct[] = $eachdeduction; 
         }
         else{
-          $comment = "constraint was not found";
-          $totalpoints -= $eachdeduction;
+          if(strcmp($constraints, "for")==0){
+            $comment = "constraint for was not found";
+            $totalpoints = floor($totalpoints - $eachdeduction);
+          }
+          else{
+            $comment = "constraint print was not found";
+            $totalpoints = floor($totalpoints - $eachdeduction);
+          }
           $correct[] = $comment;
           $check = "false";
           $checkarr[] = $check;  
@@ -127,15 +132,15 @@
      if($constraint_found == 1){        
        for($i = 0; $i < count($cinput); $i++){
         $cases = $cinput[$i];
-        //echo $cases;
+        echo $cases;
         $outputs = $coutput[$i];
-        //echo $outputs;
+        echo $outputs;
         
         $print = "print";
         $findprint = strpos($answer, $print);
         if($findprint == false){
             $code = $answer."\nprint(". $func_name."(".$cases."))"."\n";
-            
+            echo $code;
             $Output = $outputs;
             
             $runFile = "runFile.py";
@@ -144,17 +149,19 @@
             $run = exec("python $runFile 2>&1");
             fclose($fp);
             if($run == $Output){
-            $comment = "Expected output matched test case: ($cases)";
+            $comment = "Expected Output: $func_name($cases)-> $Output matched Output: $Output";
             $check = "true"; 
             }
             else{
-            $comment = "Expected output did not match test case: ($cases)";
-            $totalpoints -= $casespointsoff ;
+            $comment = "Expected Output: $func_name($cases)-> $Output Did Not Match Students Output: $Output";
+            $totalpoints = floor($totalpoints - $casespointsoff);
             $check = "false";
            }
           }
           else{
             $code = $answer."\n". $func_name."(".$cases.")"."\n";
+            echo $code;
+            
             $Output = $outputs;
             
             $runFile = "runFile.py";
@@ -163,12 +170,12 @@
             $run = exec("python $runFile 2>&1");
             fclose($fp);
             if($run == $Output){
-            $comment = "Expected output matched test case: ($cases)";
+            $comment = "Expected Output: $func_name($cases)-> $Output matched Output: $Output";
             $check = "true";  
           }
             else{
-            $comment = "Expected output did not match test case: ($cases)";
-            $totalpoints -= $casespointsoff ;
+            $comment = "Expected Output: $func_name($cases)-> $Output Did Not Match Students Output: $Output";
+            $totalpoints = floor($totalpoints - $casespointsoff);
             $check = "false"; 
           }
         }
@@ -181,14 +188,15 @@
      else{
           for($i = 0; $i < count($cinput); $i++){
           $cases = $cinput[$i];
-          //echo $cases;
+          echo $cases;
           $outputs = $coutput[$i];
-          //echo $outputs;
-        
+          echo $outputs;
+  
           $print = "print";
           $findprint = strpos($answer, $print);
         if($findprint == false){
             $code = $answer."\nprint(". $func_name."(".$cases."))"."\n";
+            echo $code;
             
             $Output = $outputs;
             
@@ -198,17 +206,18 @@
             $run = exec("python $runFile 2>&1");
             fclose($fp);
             if($run == $Output){
-            $comment = "Expected output matched test case: ($cases)";
+            $comment = "Expected Output: $func_name($cases)-> $Output matched Output: $Output";
             $check = "true";  
             }
             else{
-            $comment = "Expected output did not match test case: ($cases)";
-            $totalpoints -= $casespointsoff ;
+            $comment = "Expected Output: $func_name($cases)-> $Output Did Not Match Students Output: $Output";
+            $totalpoints = floor($totalpoints - $casespointsoff);
             $check = "false";
            }
           }
           else{
             $code = $answer."\n". $func_name."(".$cases.")"."\n";
+            echo $code;
             $Output = $outputs;
             
             $runFile = "runFile.py";
@@ -217,12 +226,12 @@
             $run = exec("python $runFile 2>&1");
             fclose($fp);
             if($run == $Output){
-            $comment = "Illegal Use Of 'print' - Points were Deducted: ($cases)";
-            $totalpoints -= $casespointsoff ;
+            $comment = "Illegal Use Of Print , Points were Deducted For The Following: $func_name($cases)-> $Output";
+            $totalpoints = floor($totalpoints - $casespointsoff);
             $check = "false";
           }
             else{
-            $comment = "Accepted Key Word For The Following: ($cases)";
+            $comment = "Accepted Key Word For The Following Test Cases: $func_name($cases)-> $Output";
             $check = "true";
           }
         }
@@ -232,8 +241,8 @@
        }
       }
     // If by chance the student gets a grade less than 0 then it will handle it and just give her/him a 0 
-    if($score < 0){
-        $score = 0;
+    if($totalpoints < 0){
+        $totalpoints = 0;
     }
   // this is just combining all the corrections my autograder did into one variable to send to back    
   $corrections = array_merge($correct, $testcases);
