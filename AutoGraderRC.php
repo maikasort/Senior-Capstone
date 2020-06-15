@@ -51,7 +51,7 @@
     }
     else{
         $eachdeduction = 0.25 * $score;
-        $casespointsoff = (0.25/count($cinput))*$score;
+        $casespointsoff = floor((0.25/count($cinput))*$score);
     }
    
     //checking for colon here using Regex
