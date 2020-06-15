@@ -1,5 +1,6 @@
 <?php
  /* All Material © Sonfo-Maika Diomande | New Jersey Institute of Technology June 2020 */
+
     $var = file_get_contents('php://input', true);
     $info = json_decode($var, true);
     
@@ -45,8 +46,8 @@
     $totalpoints = $score;
     
     if($constraint_found == 0){
-        $eachdeduction = round(0.333333 * $score);
-        $casespointsoff = round((0.333333/count($cinput))*$score);
+        $eachdeduction = floor(0.333333 * $score);
+        $casespointsoff = floor((0.333333/count($cinput))*$score);
     }
     else{
         $eachdeduction = 0.25 * $score;
@@ -67,7 +68,7 @@
             $addIn = ":";
             $strpos1 = strpos($answer, ")");
             $answer = substr_replace($answer, $addIn, $strpos1 + 1, 0);
-            $totalpoints = floor($totalpoints - $eachdeduction);
+            $totalpoints -= $eachdeduction;
             $correct[] = $comment;
             $check = "false";
             $checkarr[] = $check;
@@ -91,7 +92,7 @@
         $some_calc = $back_pos - $front_pos;
         $answer = substr_replace($answer, $func_name, $front_pos, $some_calc);
         //the corrected function name
-        $totalpoints = floor($totalpoints - $eachdeduction);
+        $totalpoints -= $eachdeduction;
         $correct[] = $comment;  
         $check = "false";
         $checkarr[] = $check;  
@@ -116,11 +117,11 @@
         else{
           if(strcmp($constraints, "for")==0){
             $comment = "constraint for was not found";
-            $totalpoints = floor($totalpoints - $eachdeduction);
+            $totalpoints -= $eachdeduction;
           }
           else{
             $comment = "constraint print was not found";
-            $totalpoints = floor($totalpoints - $eachdeduction);
+            $totalpoints -= $eachdeduction;
           }
           $correct[] = $comment;
           $check = "false";
@@ -154,7 +155,7 @@
             }
             else{
             $comment = "Expected Output: $func_name($cases)-> $Output Did Not Match Students Output: $Output";
-            $totalpoints = floor($totalpoints - $casespointsoff);
+            $totalpoints -= $casespointsoff;
             $check = "false";
            }
           }
@@ -175,7 +176,7 @@
           }
             else{
             $comment = "Expected Output: $func_name($cases)-> $Output Did Not Match Students Output: $Output";
-            $totalpoints = floor($totalpoints - $casespointsoff);
+            $totalpoints -= $casespointsoff;
             $check = "false"; 
           }
         }
@@ -211,7 +212,7 @@
             }
             else{
             $comment = "Expected Output: $func_name($cases)-> $Output Did Not Match Students Output: $Output";
-            $totalpoints = floor($totalpoints - $casespointsoff);
+            $totalpoints -= $casespointsoff;
             $check = "false";
            }
           }
@@ -227,7 +228,7 @@
             fclose($fp);
             if($run == $Output){
             $comment = "Illegal Use Of Print , Points were Deducted For The Following: $func_name($cases)-> $Output";
-            $totalpoints = floor($totalpoints - $casespointsoff);
+            $totalpoints -= $casespointsoff;
             $check = "false";
           }
             else{
