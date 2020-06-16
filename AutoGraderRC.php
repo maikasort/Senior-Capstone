@@ -7,6 +7,8 @@
     $answer = $info['Answers']; 
     $SID = $info['SID'];
     $QIDs = $info['QIDs'];
+    $TestName = $info['TestName'];
+   // echo $TestName;
     
     //$grade = 60;//dummy data to see
     
@@ -31,27 +33,30 @@
     curl_close($curl);
 
     $db = json_decode($need, true);
-    //echo $db;
+    //echo json_encode($db);
+    //echo $need;
     $func_name = $db['FunctionName'];
-    //echo $func_name;
-    $cinput = json_decode($db['TestCases']);
-    //echo $cinput;
-    $coutput = json_decode($db['TestCaseOutputs']);
-    //echo $output;
+   // echo $func_name;
+    $cinput = (array) $db['TestCases'];
+    //$cin = json_encode($cinput);
+   //echo $cin;
+    $coutput = (array) $db['TestCaseOutputs'];
+    //$cout = json_encode($coutput);
+   //echo $cout;
     $constraints = $db['Constraint'];
     $constraint_found = strcmp($constraints, "none") != 0;
     $score = $db['Qpoints'];
-    $eachdeduction = 0.25 * $score;
-    $casespointsoff = (0.25/count($cinput))*$score;
+    $eachdeduction = round(0.25 * $score);
+    $casespointsoff = round((0.25/count($cinput))*$score);
     $totalpoints = $score;
     
     if($constraint_found == 0){
-        $eachdeduction = floor(0.333333 * $score);
-        $casespointsoff = floor((0.333333/count($cinput))*$score);
+        $eachdeduction = round(0.333333 * $score);
+        $casespointsoff = round((0.333333/count($cinput))*$score);
     }
     else{
-        $eachdeduction = 0.25 * $score;
-        $casespointsoff = floor((0.25/count($cinput))*$score);
+        $eachdeduction = round(0.25 * $score);
+        $casespointsoff = round((0.25/count($cinput))*$score);
     }
    
     //checking for colon here using Regex
@@ -79,14 +84,14 @@
         $secondSet = substr($firstSet, 4);
     
        if(strcmp($secondSet, $func_name)== 0){
-            $comment = "The Function Name: $func_name was correct ";
+            $comment = "The Function Name: $func_name , was correct ";
             $correct[] = $comment;
             $check = "true";
             $checkarr[] = $check; 
             $deduct[] = $eachdeduction;  
         }
        else{
-        $comment = "The Function Name: $secondSet was incorrect"; 
+        $comment = "The Function Name: $secondSet , was incorrect"; 
         $front_pos = strpos($answer, $secondSet);
         $back_pos = strpos($answer, '(');
         $some_calc = $back_pos - $front_pos;
@@ -101,14 +106,14 @@
     //Here I will check for constraints if I find either or both it is handled as needed   
      if($constraint_found == 1){
         if(strstr($answer, "print")){
-          $comment = "constraint print was found";
+          $comment = "constraint: print was found";
           $correct[] = $comment;
           $check = "true";
           $checkarr[] = $check; 
           $deduct[] = $eachdeduction;  
         }
         elseif(strstr($answer, "for")){
-          $comment = "constraint for was found";
+          $comment = "constraint: for was found";
           $correct[] = $comment;
           $check = "true";
           $checkarr[] = $check; 
@@ -116,11 +121,11 @@
         }
         else{
           if(strcmp($constraints, "for")==0){
-            $comment = "constraint for was not found";
+            $comment = "constraint: for was not found";
             $totalpoints -= $eachdeduction;
           }
           else{
-            $comment = "constraint print was not found";
+            $comment = "constraint: print was not found";
             $totalpoints -= $eachdeduction;
           }
           $correct[] = $comment;
@@ -133,15 +138,15 @@
      if($constraint_found == 1){        
        for($i = 0; $i < count($cinput); $i++){
         $cases = $cinput[$i];
-        echo $cases;
         $outputs = $coutput[$i];
-        echo $outputs;
+        //echo $cases;
+        //echo $outputs;
         
         $print = "print";
         $findprint = strpos($answer, $print);
         if($findprint == false){
             $code = $answer."\nprint(". $func_name."(".$cases."))"."\n";
-            echo $code;
+            //echo $code;
             $Output = $outputs;
             
             $runFile = "runFile.py";
@@ -150,18 +155,18 @@
             $run = exec("python $runFile 2>&1");
             fclose($fp);
             if($run == $Output){
-            $comment = "Expected Output: $func_name($cases)-> $Output matched Output: $Output";
+            $comment = "Expected Output: $func_name($cases)-> $Output matched Output: $run";
             $check = "true"; 
             }
             else{
-            $comment = "Expected Output: $func_name($cases)-> $Output Did Not Match Students Output: $Output";
+            $comment = "Expected Output: $func_name($cases)-> $Output Did Not Match Students Output: $run";
             $totalpoints -= $casespointsoff;
             $check = "false";
            }
           }
           else{
             $code = $answer."\n". $func_name."(".$cases.")"."\n";
-            echo $code;
+            //echo $code;
             
             $Output = $outputs;
             
@@ -171,11 +176,11 @@
             $run = exec("python $runFile 2>&1");
             fclose($fp);
             if($run == $Output){
-            $comment = "Expected Output: $func_name($cases)-> $Output matched Output: $Output";
+            $comment = "Expected Output: $func_name($cases)-> $Output matched Output: $run";
             $check = "true";  
           }
             else{
-            $comment = "Expected Output: $func_name($cases)-> $Output Did Not Match Students Output: $Output";
+            $comment = "Expected Output: $func_name($cases)-> $Output Did Not Match Students Output: $run";
             $totalpoints -= $casespointsoff;
             $check = "false"; 
           }
@@ -189,15 +194,15 @@
      else{
           for($i = 0; $i < count($cinput); $i++){
           $cases = $cinput[$i];
-          echo $cases;
+          //echo $cases;
           $outputs = $coutput[$i];
-          echo $outputs;
+          //echo $outputs;
   
           $print = "print";
           $findprint = strpos($answer, $print);
         if($findprint == false){
             $code = $answer."\nprint(". $func_name."(".$cases."))"."\n";
-            echo $code;
+           // echo $code;
             
             $Output = $outputs;
             
@@ -207,18 +212,18 @@
             $run = exec("python $runFile 2>&1");
             fclose($fp);
             if($run == $Output){
-            $comment = "Expected Output: $func_name($cases)-> $Output matched Output: $Output";
+            $comment = "Expected Output: $func_name($cases)-> $Output matched Output: $run";
             $check = "true";  
             }
             else{
-            $comment = "Expected Output: $func_name($cases)-> $Output Did Not Match Students Output: $Output";
+            $comment = "Expected Output: $func_name($cases)-> $Output Did Not Match Students Output: $run";
             $totalpoints -= $casespointsoff;
             $check = "false";
            }
           }
           else{
             $code = $answer."\n". $func_name."(".$cases.")"."\n";
-            echo $code;
+            //echo $code;
             $Output = $outputs;
             
             $runFile = "runFile.py";
@@ -227,12 +232,12 @@
             $run = exec("python $runFile 2>&1");
             fclose($fp);
             if($run == $Output){
-            $comment = "Illegal Use Of Print , Points were Deducted For The Following: $func_name($cases)-> $Output";
+            $comment = "Illegal Use Of The Print Statement, Points were Deducted For The Following: $func_name($cases)-> $Output";
             $totalpoints -= $casespointsoff;
             $check = "false";
           }
             else{
-            $comment = "Accepted Key Word For The Following Test Cases: $func_name($cases)-> $Output";
+            $comment = "Accepted Return Statement For The Following Test Cases: $func_name($cases)-> $Output";
             $check = "true";
           }
         }
@@ -256,6 +261,7 @@ $toDB = array(
    "SID" => $SID,
    "QIDs" => $QIDs,
    "Score" => $totalpoints,
+   "TestName" => $TestName,
    "Corrections" => $corrections,
    "CorrectionsBool" => $checkarr,
    "CorrectionsPoints" => $deduct,
@@ -264,7 +270,7 @@ $toDB = array(
 );
 
 $resultsDB = json_encode($toDB);
-
+echo $resultsDB;
 $url = 'https://web.njit.edu/~mm693/test2.php';
 $curl = curl_init($url);
 curl_setopt($curl, CURLOPT_POST, true);
