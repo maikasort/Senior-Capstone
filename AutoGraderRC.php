@@ -51,12 +51,14 @@
     $totalpoints = $score;
     
     if($constraint_found == 0){
-        $eachdeduction = round(0.333333 * $score);
-        $casespointsoff = round((0.333333/count($cinput))*$score);
+        $eachdeduction = floor(0.333 * $score);
+        //$casespointsoff = round(((0.333/count($cinput))*$score)/5, 1)*5;
+        $casespointsoff = ceil((0.333/count($cinput))*$score);
     }
     else{
-        $eachdeduction = round(0.25 * $score);
-        $casespointsoff = round((0.25/count($cinput))*$score);
+        $eachdeduction = floor(0.25 * $score);
+        //$casespointsoff = round(((0.25/count($cinput))*$score)/5, 1)*5;
+        $casespointsoff = ceil((0.25/count($cinput))*$score);
     }
    
     //checking for colon here using Regex
