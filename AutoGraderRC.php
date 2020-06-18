@@ -46,8 +46,8 @@
     $constraints = $db['Constraint'];
     $constraint_found = strcmp($constraints, "none") != 0;
     $score = $db['Qpoints'];
-    $eachdeduction = round(0.25 * $score);
-    $casespointsoff = round((0.25/count($cinput))*$score);
+    //$eachdeduction = round(0.25 * $score);
+    //$casespointsoff = round((0.25/count($cinput))*$score);
     $totalpoints = $score;
     
     if($constraint_found == 0){
